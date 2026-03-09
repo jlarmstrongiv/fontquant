@@ -12,3 +12,4 @@ crate-type = ["cdylib"]
 fontquant-lib = { path = "../fontquant-lib" }
 pyo3 = "0.25.1"
 pythonize = "0.25.0"
+fontations = { workspace = true }
