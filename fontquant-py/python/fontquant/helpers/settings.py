@@ -1,7 +1,7 @@
 import csv
-import os
+from importlib.resources import files
 
-with open(os.path.join(os.path.dirname(__file__), "..", "data", "scripts.csv")) as csvfile:
+with files().joinpath("..", "data", "scripts.csv").open() as csvfile:
     scripts = list(csv.reader(csvfile))
 
 

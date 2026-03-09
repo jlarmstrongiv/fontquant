@@ -9,9 +9,6 @@ name = "fontquant"
 crate-type = ["cdylib"]
 
 [dependencies]
-fontquant = { path = "../fontquant-lib" }
+fontquant-lib = { path = "../fontquant-lib" }
 pyo3 = "0.25.1"
 pythonize = "0.25.0"
-
-[lints]
-workspace = true

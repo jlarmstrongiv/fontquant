@@ -10,7 +10,7 @@ authors = [
     { name = "Yanone", email = "post@yanone.de" },
     { name = "Simon Cozens", email = "simon@simon-cozens.org" },
 ]
-license = { file = "LICE" }
+license = { file = "LICENSE" }
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",

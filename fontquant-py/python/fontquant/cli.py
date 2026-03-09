@@ -74,3 +74,7 @@ def cli():
         profiler.disable()
         stats = pstats.Stats(profiler).sort_stats("tottime")
         stats.print_stats()
+
+
+if __name__ == "__main__":
+    cli()
