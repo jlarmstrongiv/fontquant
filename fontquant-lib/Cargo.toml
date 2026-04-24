@@ -3,7 +3,7 @@ name = "fontquant-lib"
 description = "Quantifiable data processor for fonts"
 readme = "../README.md"
 
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 
 license-file = "../LICENSE"
