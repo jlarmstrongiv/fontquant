@@ -4,8 +4,8 @@ use crate::{
     monkeypatching::{MakeBezGlyphs, PrimaryScript},
     quantifier,
 };
-use fontations::skrifa::{self, MetadataProvider, prelude::Size};
-use fontations::skrifa::{FontRef, raw::TableProvider, setting::VariationSetting};
+use skrifa::{self, MetadataProvider, prelude::Size};
+use skrifa::{FontRef, raw::TableProvider, setting::VariationSetting};
 use kurbo::{ParamCurveMoments, Point, Shape, Vec2};
 pub struct WholeFontStatistics {
     pub weight: f64,

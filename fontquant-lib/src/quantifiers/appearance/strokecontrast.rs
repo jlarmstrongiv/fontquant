@@ -7,7 +7,7 @@ use crate::{
     monkeypatching::MakeBezGlyphs,
     quantifier,
 };
-use fontations::skrifa;
+use skrifa;
 
 pub fn get_stroke_contrast(
     font: &skrifa::FontRef,

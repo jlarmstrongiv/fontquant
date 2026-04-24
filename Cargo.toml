@@ -5,8 +5,11 @@ members = ["fontquant-lib", "fontquant-cli"]
 [workspace.dependencies]
 clap = { version = "4.5.35", features = ["derive"] }
 itertools = "0.14.0"
-kurbo = "0.11.1"
-fontations = "0.2.0"
+kurbo = "0.13.0"
+font-types = "0.11.0"
+read-fonts = "0.37.0"
+write-fonts = "0.41.0"
+skrifa = "0.40.0"
 thiserror = "2.0.12"
 unicode-script = "0.5.7"
 log = "0.4.27"

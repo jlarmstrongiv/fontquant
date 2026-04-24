@@ -1,4 +1,4 @@
-use fontations::skrifa;
+use skrifa;
 
 pub mod appearance;
 pub mod parametric;

@@ -1,12 +1,13 @@
 use std::collections::{HashMap, HashSet};
 
 use crate::{MetricValue, error::FontquantError, monkeypatching::MakeBezGlyphs, quantifier};
-use fontations::{
-    read::{ReadError, tables::gdef::GlyphClassDef},
-    skrifa::{
-        FontRef, MetadataProvider, prelude::Size, raw::TableProvider, setting::VariationSetting,
-    },
+use read_fonts::{
+    ReadError,
+    tables::gdef::GlyphClassDef,
     types::{GlyphId, GlyphId16},
+};
+use skrifa::{
+    FontRef, MetadataProvider, prelude::Size, raw::TableProvider, setting::VariationSetting,
 };
 use unicode_properties::{GeneralCategory, UnicodeGeneralCategory};
 

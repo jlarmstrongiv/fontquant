@@ -1,4 +1,4 @@
-use fontations::skrifa;
+use skrifa;
 use itertools::process_results;
 use kurbo::Shape;
 use linesweeper::{BinaryOp, FillRule, binary_op};

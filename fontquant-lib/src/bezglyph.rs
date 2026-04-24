@@ -1,4 +1,4 @@
-use fontations::skrifa;
+use skrifa;
 use kurbo::{BezPath, Shape};
 use linesweeper::{BinaryOp, FillRule, binary_op, topology::Contours};
 

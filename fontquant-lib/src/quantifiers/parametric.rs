@@ -1,9 +1,7 @@
 use std::sync::LazyLock;
 
-use fontations::{
-    read::TableProvider,
-    skrifa::{self, MetadataProvider, prelude::Size},
-};
+use read_fonts::TableProvider;
+use skrifa::{self, MetadataProvider, prelude::Size};
 
 use crate::{
     MetricKey, MetricValue,
@@ -269,7 +267,7 @@ quantifier!(
 
 #[cfg(test)]
 mod tests {
-    use fontations::skrifa;
+    use skrifa;
 
     use crate::monkeypatching::MakeBezGlyphs;
     use std::collections::HashMap;
