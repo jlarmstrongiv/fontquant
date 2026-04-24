@@ -1,7 +1,12 @@
 [package]
 name = "fontquant-lib"
+description = "Quantifiable data processor for fonts"
+readme = "README.md"
+
 version = "0.1.0"
 edition = "2024"
+
+license-file = "LICENSE"
 
 [dependencies]
 itertools = "0.14.0"
