@@ -405,7 +405,7 @@ from fontquant import quantify
 results = quantify("path/to/font.ttf", locations="wght=400,wdth=100;wght=500,wdth=100")
 value = results["appearance"]["weight"]["value"]
 print(value)
->>> {"wdth=100.0,wght=400.0": 0.5, "wdth=100.0,wght=500.0": 0.5}
+>>> {"wdth=100.0,wght=400.0": 0.5, "wdth=100.0,wght=500.0": 0.55}
 ```
 
 **Note:** The axes per instance used in the _return value keys_ will be **sorted alphabetically**
