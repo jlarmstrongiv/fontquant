@@ -1,0 +1,46 @@
+[build-system]
+requires = ["maturin>=1.9.1,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "fontquant"
+requires-python = ">=3.8"
+description = "Prove and quantify a font's technical quality"
+authors = [
+    { name = "Yanone", email = "post@yanone.de" },
+    { name = "Simon Cozens", email = "simon@simon-cozens.org" },
+]
+license = { file = "LICENSE" }
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["version"]
+
+dependencies = [
+    "fontTools",
+    "vharfbuzz>=0.3.0,<0.4.0",
+    "uharfbuzz",
+    "booleanOperations",
+    "fontParts",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "beziers",
+    "kurbopy",
+]
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "fontquant._fontquant"
+python-source = "python"
+
+[project.optional-dependencies]
+docs = ["sphinx", "sphinxcontrib-napoleon", "sphinx_rtd_theme", "myst_parser"]
+
+[project.scripts]
+fontquant = "fontquant.cli:main"
+
+[tool.black]
+line-length = 119
