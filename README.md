@@ -30,7 +30,18 @@ Once we've reached Beta, we will keep a log of API changes.
 
 # Installation
 
-Install tool with pip: `pip install .` on your local repository clone, or with `pip install git+https://github.com/googlefonts/fontquant` directly off of Github.
+Build and install the fontquant CLI tool from source:
+
+```bash
+cargo install -p https://github.com/googlefonts/fontquant
+```
+
+Install the Python library:
+
+```bash
+maturin build --release
+pip install target/wheels/fontquant-*.whl
+```
 
 # Invoke From Command Line
 
