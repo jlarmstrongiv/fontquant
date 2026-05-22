@@ -18,7 +18,7 @@ Examples:
 
 # Full Documentation
 
-**[Complete documentation is available in Lib/fontquant/README.md](Lib/fontquant/README.md)**
+**[Complete documentation is available in fontquant-py/python/fontquant](fontquant-py/python/fontquant)**
 
 This described in detail the individual checks/values, along with recommendations of how to interpret them for user interfaces.
 
