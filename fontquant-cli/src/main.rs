@@ -1,11 +1,11 @@
 use std::{collections::BTreeSet, path::Path, str::FromStr};
 
 use clap::Parser;
-use skrifa::setting::Setting;
-use read_fonts::types::Tag;
 use fontquant_lib::{Results, run};
 use indicatif::ParallelProgressIterator;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
+use read_fonts::types::Tag;
+use skrifa::setting::Setting;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -68,8 +68,7 @@ fn main() {
         .progress()
         .map(|font| {
             let font_data = std::fs::read(font).unwrap();
-            let fontref =
-                skrifa::FontRef::new(&font_data).expect("Failed to parse font");
+            let fontref = skrifa::FontRef::new(&font_data).expect("Failed to parse font");
             run(&fontref, &args.location).map(|results| (font, results))
         })
         .collect::<Result<Vec<_>, _>>()

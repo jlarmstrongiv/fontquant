@@ -2,8 +2,7 @@
 use quantifiers::ALL_QUANTIFIERS;
 
 use crate::error::FontquantError;
-use skrifa;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 
 mod bezglyph;
 mod error;
@@ -31,6 +30,10 @@ pub enum MetricValue {
     Percentage(f64),
     /// A string value, often used for descriptive metrics.
     String(String),
+    /// A list of strings, often used for metrics that return multiple values.
+    List(Vec<String>),
+    /// Dictionary of string key-value pairs, often used for metrics that return multiple named values.
+    Dictionary(HashMap<String, String>),
     /// A boolean value, typically true or false.
     Boolean(bool),
     /// A value representing an angle in degrees.
@@ -39,6 +42,16 @@ pub enum MetricValue {
     PerMille(f64),
     /// A value representing a length in indeterminate units.
     Integer(i32),
+}
+
+impl MetricValue {
+    pub fn as_boolean(&self) -> Option<bool> {
+        if let MetricValue::Boolean(value) = self {
+            Some(*value)
+        } else {
+            None
+        }
+    }
 }
 
 impl TryInto<f64> for MetricValue {
@@ -60,6 +73,14 @@ impl std::fmt::Display for MetricValue {
             MetricValue::Metric(value) => write!(f, "{:.2}", value),
             MetricValue::Percentage(value) => write!(f, "{:.2}%", value * 100.0),
             MetricValue::String(value) => write!(f, "{}", value),
+            MetricValue::List(values) => write!(f, "{}", values.join(", ")),
+            MetricValue::Dictionary(values) => {
+                let formatted: Vec<String> = values
+                    .iter()
+                    .map(|(k, v)| format!("{}: {}", k, v))
+                    .collect();
+                write!(f, "{{{}}}", formatted.join(", "))
+            }
             MetricValue::Boolean(value) => write!(f, "{}", value),
             MetricValue::Angle(value) => write!(f, "{:.2}", value),
             MetricValue::PerMille(value) => write!(f, "{:.0}", value),

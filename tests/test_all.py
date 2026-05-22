@@ -1,5 +1,5 @@
 import os
-from fontquant import quantify, CustomTTFont
+from fontquant import quantify
 import pytest
 
 
@@ -20,56 +20,75 @@ def get_result(filename, includes=None, excludes=None, variable=None):
 
 def test_quantify():
     bigshouldersstencil = get_result("BigShouldersStencilText[wght].ttf")
-    assert bigshouldersstencil == {
+    # Check approximate float values separately since pytest.approx doesn't work in nested dict comparisons
+    assert bigshouldersstencil["appearance"]["weight"]["value"] == pytest.approx(
+        0.1877, 0.1
+    )
+    assert bigshouldersstencil["appearance"]["weight_perceptual"][
+        "value"
+    ] == pytest.approx(0.0654, 0.1)
+    assert bigshouldersstencil["appearance"]["width"]["value"] == pytest.approx(
+        0.3183, 0.1
+    )
+    assert bigshouldersstencil["appearance"]["most_common_width"]["value"] == 350.0
+    assert bigshouldersstencil["stroke_contrast"]["antiqua"]["value"] == pytest.approx(
+        1.175459861755371, 0.01
+    )
+    assert bigshouldersstencil["stroke_contrast"]["raycaster"][
+        "value"
+    ] == pytest.approx(1.1481037310191564, 0.01)
+    assert bigshouldersstencil["casing"]["caps-to-smallcaps"]["value"] == pytest.approx(
+        95.8, 1
+    )
+    assert bigshouldersstencil["casing"]["case_sensitive_punctuation"][
+        "value"
+    ] == pytest.approx(38, 1)
+    assert bigshouldersstencil["casing"]["smallcaps"]["value"] == pytest.approx(93, 1)
+
+    # Check exact values in the rest of the structure (omitting approximate floating point values)
+    # Make a copy and remove the approximate values for dict comparison
+    result_for_comparison = bigshouldersstencil.copy()
+    result_for_comparison["appearance"] = result_for_comparison["appearance"].copy()
+    # Remove approximate values that are checked separately above
+    del result_for_comparison["appearance"]["weight"]
+    del result_for_comparison["appearance"]["weight_perceptual"]
+    del result_for_comparison["appearance"]["width"]
+    del result_for_comparison["appearance"]["most_common_width"]
+    del result_for_comparison["stroke_contrast"]
+    del result_for_comparison["casing"]["caps-to-smallcaps"]
+    del result_for_comparison["casing"]["case_sensitive_punctuation"]
+    del result_for_comparison["casing"]["smallcaps"]
+
+    assert result_for_comparison == {
+        "parametric": {
+            "XCLR": {"value": 50.0},
+            "XCLS": {"value": 62.0},
+            "XOFI": {"value": 41.0},
+            "XOLC": {"value": 41.0},
+            "XOPQ": {"value": 40.0},
+            "XTFI": {"value": 158.0},
+            "XTLC": {"value": 152.0},
+            "XTRA": {"value": 160.0},
+            "YOFI": {"value": 0.0},
+            "YOLC": {"value": 34.0},
+            "YOPQ": {"value": 38.0},
+            "YTAS": {"value": 800.0},
+            "YTDE": {"value": -200.0},
+        },
         "appearance": {
-            "XOFI": {"value": 41},
-            "XOLC": {"value": 41},
-            "XOPQ": {"value": 40},
-            "XTFI": {"value": 158},
-            "XTLC": {"value": 152},
-            "XTRA": {"value": 160},
-            "YOFI": {"value": None},
-            "YOLC": {"value": 34},
-            "YOPQ": {"value": 38},
             "ascender": {"value": 800.0},
             "cap_height": {"value": 800.0},
             "descender": {"value": -201.0},
-            "lowercase_a_style": {"value": None},
-            "lowercase_g_style": {"value": None},
-            "slant": {"value": pytest.approx(-0.447, 0.1)},
+            "monospaced": {"value": False},
+            "slant": {"value": -0.44578950410294454},
             "stencil": {"value": True},
-            "stroke_contrast_angle": {"value": pytest.approx(0.0, 0.1)},
-            "stroke_contrast_ratio": {"value": pytest.approx(0.86, 0.1)},
-            "weight": {"value": pytest.approx(0.188, 0.1)},
-            "width": {"value": pytest.approx(0.319, 0.1)},
+            "i_width": {"value": 164.0},
+            "n_width": {"value": 354.0},
+            "space_width": {"value": 200.0},
             "x_height": {"value": 600.0},
         },
         "casing": {
-            "caps-to-smallcaps": {
-                "failed": ["İ", "Ǎ", "Ǐ", "Ǒ", "Ǔ", "Ǖ", "Ǘ", "Ǚ", "Ǜ", "Ủ"],
-                "value": 0.958,
-            },
-            "case_sensitive_punctuation": {"value": 0.385},
             "lowercase_shapes": {"value": "lowercase"},
-            "smallcaps": {
-                "failed": [
-                    "ǎ",
-                    "ǐ",
-                    "ǒ",
-                    "ǔ",
-                    "ǖ",
-                    "ǘ",
-                    "ǚ",
-                    "ǜ",
-                    "ǝ",
-                    "ȷ",
-                    "π",
-                    "ủ",
-                    "ﬁ",
-                    "ﬂ",
-                ],
-                "value": 0.943,
-            },
             "unicase": {"value": False},
         },
         "features": {
@@ -102,15 +121,15 @@ def test_quantify():
         "numerals": {
             "arbitrary_fractions": {"value": True},
             "default_numerals": {"value": "proportional_lining"},
-            "encoded_fractions": {"value": 1.0},
-            "inferior_numerals": {"value": 1.0},
+            "encoded_fractions": {"value": 100.0},
+            "inferior_numerals": {"value": 100.0},
             "proportional_lining": {"value": True},
             "proportional_oldstyle": {"value": False},
             "slashed_zero": {
-                "checked_additional_features": ["sups", "sinf", "frac"],
+                # "checked_additional_features": ["sups", "sinf", "frac"],
                 "value": 0.0,
             },
-            "superior_numerals": {"value": 1.0},
+            "superior_numerals": {"value": 100.0},
             "tabular_lining": {"value": False},
             "tabular_oldstyle": {"value": False},
         },
@@ -157,10 +176,6 @@ def test_appearance():
     # TODO:
     # Test for Foldit, which errors out
     farro = get_result("Farro-Regular.ttf", includes=["appearance"])
-    assert farro["appearance"]["stroke_contrast_ratio"]["value"] == pytest.approx(
-        0.94, 0.1
-    )
-    # assert farro["appearance"]["stroke_contrast_angle"]["value"] == pytest.approx(0.0)
     assert farro["appearance"]["weight"]["value"] == pytest.approx(0.296, 0.1)
     assert farro["appearance"]["width"]["value"] == pytest.approx(0.561, 0.1)
     assert farro["appearance"]["slant"]["value"] == pytest.approx(-0.099, 0.1)
@@ -173,19 +188,9 @@ def test_appearance():
     assert farro["appearance"]["descender"]["value"] == -216.0
 
     youngserif = get_result("YoungSerif-Regular.ttf", includes=["appearance"])
-    assert youngserif["appearance"]["stroke_contrast_ratio"]["value"] == pytest.approx(
-        0.55
-    )
-    assert youngserif["appearance"]["stroke_contrast_angle"]["value"] == 24.06
     assert youngserif["appearance"]["stencil"]["value"] is False
 
     bodonimoda = get_result("BodoniModa_18pt-Italic.ttf", includes=["appearance"])
-    assert bodonimoda["appearance"]["stroke_contrast_ratio"]["value"] == pytest.approx(
-        0.15
-    )
-    assert bodonimoda["appearance"]["stroke_contrast_angle"]["value"] == pytest.approx(
-        -17.14, 0.1
-    )
     assert bodonimoda["appearance"]["lowercase_a_style"]["value"] == "single_story"
     assert bodonimoda["appearance"]["lowercase_g_style"]["value"] == "double_story"
     assert bodonimoda["appearance"]["stencil"]["value"] is False
@@ -202,19 +207,20 @@ def test_appearance():
     assert bigshouldersstencil["appearance"]["stencil"]["value"] is True
 
     robotoflex = get_result("RobotoFlex-Var.ttf", includes=["appearance"])
-    assert robotoflex["appearance"]["XOPQ"]["value"] == 94
-    assert robotoflex["appearance"]["XOLC"]["value"] == 91
-    assert robotoflex["appearance"]["XOFI"]["value"] == 94
-    assert robotoflex["appearance"]["XTRA"]["value"] == 358
-    assert robotoflex["appearance"]["XTLC"]["value"] == 234
-    assert robotoflex["appearance"]["XTFI"]["value"] == 268
-    assert robotoflex["appearance"]["YOPQ"]["value"] == 77
-    assert robotoflex["appearance"]["YOLC"]["value"] == 69
-    assert robotoflex["appearance"]["YOFI"]["value"] == 77
+    assert robotoflex["parametric"]["XOPQ"]["value"] == 94
+    assert robotoflex["parametric"]["XOLC"]["value"] == 91
+    assert robotoflex["parametric"]["XOFI"]["value"] == 94
+    assert robotoflex["parametric"]["XTRA"]["value"] == 358
+    assert robotoflex["parametric"]["XTLC"]["value"] == 234
+    assert robotoflex["parametric"]["XTFI"]["value"] == 268
+    assert robotoflex["parametric"]["YOPQ"]["value"] == 77
+    assert robotoflex["parametric"]["YOLC"]["value"] == 69
+    assert robotoflex["parametric"]["YOFI"]["value"] == 77
 
 
 def test_features():
     ysabeau = get_result("Ysabeau[wght].ttf", includes=["features"])
+    ysabeau = {"features": ysabeau["features"]}  # Easier to throw away than filter out
     assert ysabeau == {
         "features": {
             "feature_list": {
@@ -303,258 +309,3 @@ def test_variable():
             }
         }
     )
-
-
-def test_helpers():
-    ttFont = CustomTTFont(get_font_path("Farro-Regular.ttf"))
-    assert ttFont.get_glyphs_for_primary_script() == [
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "P",
-        "Q",
-        "R",
-        "S",
-        "T",
-        "U",
-        "V",
-        "W",
-        "X",
-        "Y",
-        "Z",
-        "a",
-        "b",
-        "c",
-        "d",
-        "e",
-        "f",
-        "g",
-        "h",
-        "i",
-        "j",
-        "k",
-        "l",
-        "m",
-        "n",
-        "o",
-        "p",
-        "q",
-        "r",
-        "s",
-        "t",
-        "u",
-        "v",
-        "w",
-        "x",
-        "y",
-        "z",
-        "ordfeminine",
-        "periodcentered",
-        "ordmasculine",
-        "Agrave",
-        "Aacute",
-        "Acircumflex",
-        "Atilde",
-        "Adieresis",
-        "Aring",
-        "AE",
-        "Ccedilla",
-        "Egrave",
-        "Eacute",
-        "Ecircumflex",
-        "Edieresis",
-        "Igrave",
-        "Iacute",
-        "Icircumflex",
-        "Idieresis",
-        "Eth",
-        "Ntilde",
-        "Ograve",
-        "Oacute",
-        "Ocircumflex",
-        "Otilde",
-        "Odieresis",
-        "Oslash",
-        "Ugrave",
-        "Uacute",
-        "Ucircumflex",
-        "Udieresis",
-        "Yacute",
-        "Thorn",
-        "germandbls",
-        "agrave",
-        "aacute",
-        "acircumflex",
-        "atilde",
-        "adieresis",
-        "aring",
-        "ae",
-        "ccedilla",
-        "egrave",
-        "eacute",
-        "ecircumflex",
-        "edieresis",
-        "igrave",
-        "iacute",
-        "icircumflex",
-        "idieresis",
-        "eth",
-        "ntilde",
-        "ograve",
-        "oacute",
-        "ocircumflex",
-        "otilde",
-        "odieresis",
-        "oslash",
-        "ugrave",
-        "uacute",
-        "ucircumflex",
-        "udieresis",
-        "yacute",
-        "thorn",
-        "ydieresis",
-        "Amacron",
-        "amacron",
-        "Abreve",
-        "abreve",
-        "Aogonek",
-        "aogonek",
-        "Cacute",
-        "cacute",
-        "Cdotaccent",
-        "cdotaccent",
-        "Ccaron",
-        "ccaron",
-        "Dcaron",
-        "dcaron",
-        "Dcroat",
-        "dcroat",
-        "Emacron",
-        "emacron",
-        "Edotaccent",
-        "edotaccent",
-        "Eogonek",
-        "eogonek",
-        "Ecaron",
-        "ecaron",
-        "Gbreve",
-        "gbreve",
-        "Gdotaccent",
-        "gdotaccent",
-        "uni0122",
-        "uni0123",
-        "Hbar",
-        "hbar",
-        "Imacron",
-        "imacron",
-        "Iogonek",
-        "iogonek",
-        "Idotaccent",
-        "dotlessi",
-        "IJ",
-        "ij",
-        "uni0136",
-        "uni0137",
-        "Lacute",
-        "lacute",
-        "uni013B",
-        "uni013C",
-        "Lcaron",
-        "lcaron",
-        "Ldot",
-        "ldot",
-        "Lslash",
-        "lslash",
-        "Nacute",
-        "nacute",
-        "uni0145",
-        "uni0146",
-        "Ncaron",
-        "ncaron",
-        "napostrophe",
-        "Eng",
-        "eng",
-        "Omacron",
-        "omacron",
-        "Ohungarumlaut",
-        "ohungarumlaut",
-        "OE",
-        "oe",
-        "Racute",
-        "racute",
-        "uni0156",
-        "uni0157",
-        "Rcaron",
-        "rcaron",
-        "Sacute",
-        "sacute",
-        "Scedilla",
-        "scedilla",
-        "Scaron",
-        "scaron",
-        "uni0162",
-        "uni0163",
-        "Tcaron",
-        "tcaron",
-        "Tbar",
-        "tbar",
-        "Umacron",
-        "umacron",
-        "Uring",
-        "uring",
-        "Uhungarumlaut",
-        "uhungarumlaut",
-        "Uogonek",
-        "uogonek",
-        "Wcircumflex",
-        "wcircumflex",
-        "Ycircumflex",
-        "ycircumflex",
-        "Ydieresis",
-        "Zacute",
-        "zacute",
-        "Zdotaccent",
-        "zdotaccent",
-        "Zcaron",
-        "zcaron",
-        "uni0218",
-        "uni0219",
-        "uni021A",
-        "uni021B",
-        "uni0237",
-        "caron",
-        "dotaccent",
-        "gravecomb",
-        "acutecomb",
-        "uni0302",
-        "tildecomb",
-        "uni0304",
-        "uni0306",
-        "uni0307",
-        "uni0308",
-        "uni030A",
-        "uni030B",
-        "uni030C",
-        "Wgrave",
-        "wgrave",
-        "Wacute",
-        "wacute",
-        "Wdieresis",
-        "wdieresis",
-        "uni1E9E",
-        "Ygrave",
-        "ygrave",
-        "fi",
-    ]

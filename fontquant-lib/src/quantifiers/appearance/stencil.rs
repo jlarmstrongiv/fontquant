@@ -1,7 +1,7 @@
-use skrifa;
 use itertools::process_results;
 use kurbo::Shape;
 use linesweeper::{BinaryOp, FillRule, binary_op};
+use skrifa;
 
 use crate::{MetricValue, bezglyph::BezGlyph, monkeypatching::MakeBezGlyphs, quantifier};
 
@@ -24,7 +24,7 @@ pub fn is_stencil_font(
 
 quantifier!(
     STENCIL,
-    "stencil",
+    "appearance/stencil",
     "Reports whether or not a font is a stencil font. It recognizes a stencil font correctly, but may sometimes mis-report non-stencil fonts as stencil fonts because it only looks at a limited set of characters for speed optimization.",
     MetricValue::Boolean(false)
 );

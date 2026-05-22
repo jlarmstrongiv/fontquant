@@ -1,6 +1,9 @@
 use skrifa;
 
 pub mod appearance;
+pub mod casing;
+pub mod features;
+pub mod numerals;
 pub mod parametric;
 
 pub type QuantifierFn = fn(
@@ -15,4 +18,11 @@ pub const ALL_QUANTIFIERS: &[QuantifierFn] = &[
     parametric::get_parametric,
     appearance::get_stroke_contrast,
     appearance::metrics::gather_from_font,
+    casing::is_unicase,
+    appearance::storys::check_lowercase_a_style, // Needs stencil and unicase first
+    appearance::storys::check_lowercase_g_style, // Needs stencil and unicase first
+    casing::test_casing,
+    casing::get_lowercase_shapes,
+    numerals::get_numeral_styles,
+    features::gather_features,
 ];

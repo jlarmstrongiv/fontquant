@@ -8,7 +8,6 @@
 //! * `.bezglyph_for_gid` - Returns a `BezGlyph` for a given glyph ID at a given location and scale.
 use std::collections::HashMap;
 
-use skrifa;
 use skrifa::{FontRef, GlyphId, MetadataProvider, setting::VariationSetting};
 use unicode_script::UnicodeScript;
 

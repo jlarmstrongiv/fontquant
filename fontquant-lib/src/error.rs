@@ -1,4 +1,3 @@
-use skrifa;
 use thiserror::Error;
 
 #[derive(Debug, Error)]

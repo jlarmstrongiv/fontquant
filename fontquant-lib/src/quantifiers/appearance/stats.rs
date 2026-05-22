@@ -1,12 +1,15 @@
 use crate::{
     MetricValue,
+    bezglyph::BezGlyph,
     error::FontquantError,
     monkeypatching::{MakeBezGlyphs, PrimaryScript},
     quantifier,
 };
+use kurbo::{ParamCurveMoments, Point, Shape, Vec2};
 use skrifa::{self, MetadataProvider, prelude::Size};
 use skrifa::{FontRef, raw::TableProvider, setting::VariationSetting};
-use kurbo::{ParamCurveMoments, Point, Shape, Vec2};
+
+const EPSILON: f64 = 0.001;
 pub struct WholeFontStatistics {
     pub weight: f64,
     #[allow(dead_code)]
@@ -38,10 +41,7 @@ impl WholeFontStatistics {
             else {
                 continue;
             };
-            let slant = bezglyph
-                .iter()
-                .map(|p| p.slant())
-                .fold(0.0, |acc, s| acc + s);
+            let slant = glyph_slant(&bezglyph);
             let area = bezglyph
                 .iter()
                 .map(|p| p.area())
@@ -77,35 +77,66 @@ impl WholeFontStatistics {
     }
 }
 
+fn glyph_slant(bezglyph: &BezGlyph) -> f64 {
+    let area = bezglyph.iter().map(|p| p.area()).sum::<f64>();
+    if area == 0.0 {
+        return 0.0;
+    }
+
+    let (moment_x, moment_y, moment_yy, moment_xy) =
+        bezglyph
+            .iter()
+            .fold((0.0, 0.0, 0.0, 0.0), |(mx, my, myy, mxy), path| {
+                let moments = path.moments();
+                (
+                    mx + moments.moment_x,
+                    my + moments.moment_y,
+                    myy + moments.moment_yy,
+                    mxy + moments.moment_xy,
+                )
+            });
+
+    let mean_x = moment_x / area;
+    let mean_y = moment_y / area;
+    let variance_y = (moment_yy / area - mean_y * mean_y).abs();
+    let covariance = moment_xy / area - mean_x * mean_y;
+    let slant = if variance_y != 0.0 {
+        covariance / variance_y
+    } else {
+        f64::NAN
+    };
+    if slant.abs() > EPSILON { slant } else { 0.0 }
+}
+
 quantifier!(
     WEIGHT,
-    "weight",
+    "appearance/weight",
     "Measures the weight of encoded characters of the font as the amount of ink per glyph as a percentage of an em square and returns the average of all glyphs measured.",
     MetricValue::Percentage(0.12)
 );
 
 quantifier!(
     WEIGHT_PERCEPTUAL,
-    "weight_perceptual",
+    "appearance/weight_perceptual",
     "Measures the weight of encoded characters of the font as the amount of ink per glyph and returns the average of all glyphs measured.",
     MetricValue::Metric(123.0)
 );
 
 quantifier!(
     WIDTH,
-    "width",
+    "appearance/width",
     "Measures the width of encoded characters of the font as a percentage of the UPM and returns the average of all glyphs measured.",
     MetricValue::Percentage(0.12)
 );
 
 quantifier!(
     SLANT,
-    "slant",
+    "appearance/slant",
     "Measures the slant angle of encoded characters of the font in degrees and returns the average of all glyphs measured. Right-leaning shapes have negative numbers.",
     MetricValue::Angle(12.0)
 );
 
-trait CurveStatistics {
+pub(crate) trait CurveStatistics {
     fn slant(&self) -> f64;
     fn center_of_mass(&self) -> Point;
     fn variance(&self) -> Vec2;
@@ -115,7 +146,7 @@ trait CurveStatistics {
 impl CurveStatistics for kurbo::BezPath {
     fn slant(&self) -> f64 {
         let slant = self.covariance() / self.variance().y;
-        if slant.abs() > 0.001 { slant } else { 0.0 }
+        if slant.abs() > EPSILON { slant } else { 0.0 }
     }
     fn center_of_mass(&self) -> Point {
         let area = self.area();

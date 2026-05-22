@@ -1,4 +1,3 @@
-use skrifa;
 use kurbo::{BezPath, Shape};
 use linesweeper::{BinaryOp, FillRule, binary_op, topology::Contours};
 
@@ -42,7 +41,7 @@ impl BezGlyph {
         let result = binary_op(
             &bigpath,
             &BezPath::new(),
-            FillRule::EvenOdd,
+            FillRule::NonZero,
             BinaryOp::Union,
         )
         .map_err(|_| FontquantError::LinesweeperError)?;
@@ -51,6 +50,15 @@ impl BezGlyph {
 
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
+    }
+
+    #[allow(dead_code)] // Used while debugging
+    pub fn to_svg(&self) -> String {
+        let bigpath = self.iter().fold(BezPath::new(), |mut acc, path| {
+            acc.extend(path.iter());
+            acc
+        });
+        bigpath.to_svg()
     }
 }
 

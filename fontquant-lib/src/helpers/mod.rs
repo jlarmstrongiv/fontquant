@@ -1,6 +1,7 @@
 use kurbo::{BezPath, Line, ParamCurve, Point};
 
 pub mod raycaster;
+pub mod shaping;
 pub mod strokecontrast;
 
 pub(crate) fn remove_outliers<T, F>(list: &mut Vec<T>, f: F)
