@@ -13,18 +13,11 @@ pub fn is_stencil_font(
     let characters = ['A', 'O', 'a', 'e', 'o', 'p'];
     let glyphs_we_have = characters
         .iter()
-        .flat_map(|c| {
-            font.bezglyph_for_char(location, None, *c)
-                .transpose()
-                .map(|opt| opt.map(|bez| (bez, c)))
-        })
+        .flat_map(|c| font.bezglyph_for_char(location, None, *c).transpose())
         .collect::<Result<Vec<_>, _>>()?;
-    let result = process_results(
-        glyphs_we_have
-            .iter()
-            .map(|(bez, c)| is_stencil_glyph(bez, &c.to_string())),
-        |mut iter| iter.all(|c| c),
-    )?;
+    let result = process_results(glyphs_we_have.iter().map(is_stencil_glyph), |mut iter| {
+        iter.all(|c| c)
+    })?;
     results.add_metric(&STENCIL, MetricValue::Boolean(result));
     Ok(())
 }
@@ -36,7 +29,7 @@ quantifier!(
     MetricValue::Boolean(false)
 );
 
-fn is_stencil_glyph(glyph: &BezGlyph, glyphname: &str) -> Result<bool, crate::FontquantError> {
+fn is_stencil_glyph(glyph: &BezGlyph) -> Result<bool, crate::FontquantError> {
     let simplified = glyph.remove_overlaps()?;
     let total_length = simplified.iter().map(|p| p.perimeter(0.01)).sum::<f64>();
     if simplified.iter().count() > 0 && total_length > 0.0 {
