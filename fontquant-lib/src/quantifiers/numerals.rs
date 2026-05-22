@@ -12,7 +12,10 @@ use skrifa::{
 use crate::{
     MetricValue,
     error::FontquantError,
-    helpers::shaping::{ratio_of_different_shapes, shape_with_features, shapes_differently_between, shapes_differently_with_features},
+    helpers::shaping::{
+        ratio_of_different_shapes, shape_with_features, shapes_differently_between,
+        shapes_differently_with_features,
+    },
     monkeypatching::MakeBezGlyphs,
     quantifier,
 };
@@ -256,11 +259,19 @@ pub(crate) fn get_numeral_styles(
     ];
     // sups: does adding `zero` on top of `sups` change the shaping of "0"?
     if shapes_differently_with_features(font, "0", &[Tag::new(b"sups")]) {
-        slashed_zero_checks.push(("0", vec![Tag::new(b"sups")], vec![Tag::new(b"zero"), Tag::new(b"sups")]));
+        slashed_zero_checks.push((
+            "0",
+            vec![Tag::new(b"sups")],
+            vec![Tag::new(b"zero"), Tag::new(b"sups")],
+        ));
     }
     // sinf: does adding `zero` on top of `sinf` change the shaping of "0"?
     if shapes_differently_with_features(font, "0", &[Tag::new(b"sinf")]) {
-        slashed_zero_checks.push(("0", vec![Tag::new(b"sinf")], vec![Tag::new(b"zero"), Tag::new(b"sinf")]));
+        slashed_zero_checks.push((
+            "0",
+            vec![Tag::new(b"sinf")],
+            vec![Tag::new(b"zero"), Tag::new(b"sinf")],
+        ));
     }
     // frac: does adding `zero` on top of `frac` change "0/1" / "1/0"?
     if arbitrary_fractions {
@@ -269,7 +280,9 @@ pub(crate) fn get_numeral_styles(
     }
     let slashed_zero_ratio = slashed_zero_checks
         .iter()
-        .filter(|(string, base, with_zero)| shapes_differently_between(font, string, base, with_zero))
+        .filter(|(string, base, with_zero)| {
+            shapes_differently_between(font, string, base, with_zero)
+        })
         .count() as f64
         / slashed_zero_checks.len() as f64;
 
@@ -310,20 +323,25 @@ pub(crate) fn get_numeral_styles(
     results.add_metric(
         &SINF,
         MetricValue::Percentage(
-            ratio_of_different_shapes(font, |c| c.is_ascii_digit(), harfrust::Tag::new(b"sinf")) * 100.0,
+            ratio_of_different_shapes(font, |c| c.is_ascii_digit(), harfrust::Tag::new(b"sinf"))
+                * 100.0,
         ),
     );
     results.add_metric(
         &SUPS,
         MetricValue::Percentage(
-            ratio_of_different_shapes(font, |c| c.is_ascii_digit(), harfrust::Tag::new(b"sups")) * 100.0,
+            ratio_of_different_shapes(font, |c| c.is_ascii_digit(), harfrust::Tag::new(b"sups"))
+                * 100.0,
         ),
     );
     results.add_metric(
         &ENCODED_FRACTIONS_CHECK,
         MetricValue::Percentage(encoded_fractions_ratio * 100.0),
     );
-    results.add_metric(&EXTENDED_FRACTIONS, MetricValue::Boolean(arbitrary_fractions));
+    results.add_metric(
+        &EXTENDED_FRACTIONS,
+        MetricValue::Boolean(arbitrary_fractions),
+    );
     results.add_metric(
         &SLASHED_ZERO,
         MetricValue::Percentage(slashed_zero_ratio * 100.0),
